@@ -113,9 +113,9 @@ Begin VB.Form frmMain
       HideSelection   =   -1  'True
       Locked          =   0   'False
       MaxLength       =   0
-      MultiLine       =   0   'False
+      MultiLine       =   -1  'True
       PasswordChar    =   ""
-      ScrollBars      =   0
+      ScrollBars      =   2
    End
 End
 Attribute VB_Name = "frmMain"
@@ -123,10 +123,43 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+' BambooPad
+' A simple notepad replacement for Windows CE.
+'
+' Author: Nathan Campos <nathan@innoveworkshop.com>
 Option Explicit
 
+' General variables.
+Dim bTextDirty As Boolean
+
+' Application was loaded.
 Private Sub Form_Load()
+    bTextDirty = False
+    
     ResizeControls
+    InitializeCommandBar
+End Sub
+
+' Event fired when the text changes.
+Private Sub txtMain_Change()
+    bTextDirty = True
+End Sub
+
+' Event fired when a menu item is clicked.
+Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
+    ScrollBarConstants.vbBoth
+    Select Case Item.Key
+    Case "New"
+        NewFile bTextDirty, txtMain
+    Case "WordWrap"
+        'If (txtMain.ScrollBars = ScrollBarConstants.vbBoth) Then
+        '    txtMain.ScrollBars = vbVertical
+        'Else
+        '    txtMain.ScrollBars = vbBoth
+        'End If
+    Case "Exit"
+        App.End
+    End Select
 End Sub
 
 ' Resizes all the controls together with the window.
@@ -135,8 +168,60 @@ Private Sub ResizeControls()
     cbrMain.Width = Me.Width
     
     ' Setup and resize the text box.
-    txtMain.Top = cbrMain.Height
+    txtMain.Top = cbrMain.Top + cbrMain.Height
     txtMain.Left = 0
     txtMain.Width = Me.Width
     txtMain.Height = Me.Height - cbrMain.Height
+End Sub
+
+' Initializes the command bar and adds all of its controls.
+Private Sub InitializeCommandBar()
+    Dim mnuMain As CommandbarLib.CommandBarMenuBar
+    Dim mnuFile As CommandbarLib.Item
+    Dim mnuEdit As CommandbarLib.Item
+    Dim mnuFind As CommandbarLib.Item
+    Dim mnuFormat As CommandbarLib.Item
+    Dim mnuHelp As CommandbarLib.Item
+    
+    ' Initialize the menu bar.
+    Set mnuMain = cbrMain.Controls.Add(cbrMenuBar, "MainMenu")
+    
+    ' Populate the File menu.
+    Set mnuFile = mnuMain.Items.Add(1, "mnuFile", "&File")
+    mnuFile.SubItems.Add , "New", "&New"
+    mnuFile.SubItems.Add , "Open", "&Open..."
+    mnuFile.SubItems.Add , "Save", "&Save"
+    mnuFile.SubItems.Add , "SaveAs", "Save &As..."
+    mnuFile.SubItems.Add , "", "", cbrMenuSeparator
+    mnuFile.SubItems.Add , "Exit", "E&xit"
+    
+    ' Populate the Edit menu.
+    Set mnuEdit = mnuMain.Items.Add(2, "mnuEdit", "&Edit")
+    mnuEdit.SubItems.Add , "Undo", "&Undo"
+    mnuEdit.SubItems.Add , "Redo", "&Redo"
+    mnuEdit.SubItems.Add , "", "", cbrMenuSeparator
+    mnuEdit.SubItems.Add , "Cut", "Cu&t"
+    mnuEdit.SubItems.Add , "Copy", "&Copy"
+    mnuEdit.SubItems.Add , "Paste", "&Paste"
+    mnuEdit.SubItems.Add , "", "", cbrMenuSeparator
+    mnuEdit.SubItems.Add , "SelectAll", "Select &All"
+    
+    ' Populate the Find menu.
+    Set mnuFind = mnuMain.Items.Add(3, "mnuFind", "&Find")
+    mnuFind.SubItems.Add , "Find", "F&ind..."
+    mnuFind.SubItems.Add , "FindNext", "Find &Next"
+    mnuFind.SubItems.Add , "Replace", "&Replace..."
+    mnuFind.SubItems.Add , "", "", cbrMenuSeparator
+    mnuFind.SubItems.Add , "GoTo", "&Go To..."
+    
+    ' Populate the Format menu.
+    Set mnuFormat = mnuMain.Items.Add(4, "mnuFormat", "For&mat")
+    mnuFormat.SubItems.Add , "WordWrap", "&Word Wrap"
+    mnuFormat.SubItems.Add , "Font", "&Font..."
+    mnuFormat.SubItems.Add , "", "", cbrMenuSeparator
+    mnuFormat.SubItems.Add , "AutoIndent", "&Auto Indent"
+    
+    ' Populate the Help menu.
+    Set mnuHelp = mnuMain.Items.Add(5, "mnuHelp", "&Help")
+    mnuHelp.SubItems.Add , "About", "&About"
 End Sub
