@@ -1,0 +1,7 @@
+# Compiled binaries.
+*.vb
+*.exe
+
+# Misc.
+.DS_Store
+

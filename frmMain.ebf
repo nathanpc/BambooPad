@@ -1,0 +1,142 @@
+VERSION 5.00
+Object = "{A32A88B3-817C-11D1-A762-00AA0044064C}#1.0#0"; "mscecomdlg.dll"
+Object = "{BE67ABF5-0137-11D2-9B8A-00C04FAD5AEC}#1.0#0"; "mscecommandbar.dll"
+Object = "{25C953A7-5464-11D1-A714-00AA0044064C}#1.0#0"; "MSCEFile.dll"
+Begin VB.Form frmMain 
+   BorderStyle     =   0  'None
+   Caption         =   "BambooPad"
+   ClientHeight    =   2490
+   ClientLeft      =   0
+   ClientTop       =   0
+   ClientWidth     =   4980
+   ScaleHeight     =   2490
+   ScaleWidth      =   4980
+   ShowInTaskbar   =   0   'False
+   WindowState     =   2  'Maximized
+   Begin CEComDlgCtl.CommonDialog dlgFont 
+      Left            =   4320
+      Top             =   1440
+      _cx             =   847
+      _cy             =   847
+      CancelError     =   0   'False
+      Color           =   0
+      DefaultExt      =   ""
+      DialogTitle     =   ""
+      FileName        =   ""
+      Filter          =   ""
+      FilterIndex     =   0
+      Flags           =   0
+      HelpCommand     =   0
+      HelpContext     =   ""
+      HelpFile        =   ""
+      InitDir         =   ""
+      MaxFileSize     =   256
+      FontBold        =   0   'False
+      FontItalic      =   0   'False
+      FontName        =   ""
+      FontSize        =   10
+      FontUnderline   =   0   'False
+      Max             =   0
+      Min             =   0
+      FontStrikethru  =   0   'False
+   End
+   Begin FILECTLCtl.File hndFile 
+      Left            =   3720
+      Top             =   360
+      _cx             =   1000
+      _cy             =   1000
+   End
+   Begin CommandbarLib.CommandBar cbrMain 
+      Height          =   345
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   3015
+      _cx             =   5318
+      _cy             =   600
+      Enabled         =   -1  'True
+      OKButton        =   0   'False
+      HelpButton      =   0   'False
+      CloseButton     =   -1  'True
+   End
+   Begin CEComDlgCtl.CommonDialog dlgFile 
+      Left            =   3600
+      Top             =   1440
+      _cx             =   847
+      _cy             =   847
+      CancelError     =   0   'False
+      Color           =   0
+      DefaultExt      =   "txt"
+      DialogTitle     =   "Save"
+      FileName        =   ""
+      Filter          =   ""
+      FilterIndex     =   0
+      Flags           =   0
+      HelpCommand     =   0
+      HelpContext     =   ""
+      HelpFile        =   ""
+      InitDir         =   ""
+      MaxFileSize     =   256
+      FontBold        =   0   'False
+      FontItalic      =   0   'False
+      FontName        =   ""
+      FontSize        =   10
+      FontUnderline   =   0   'False
+      Max             =   0
+      Min             =   0
+      FontStrikethru  =   0   'False
+   End
+   Begin VBCE.TextBox txtMain 
+      Height          =   1095
+      Left            =   480
+      TabIndex        =   1
+      Top             =   720
+      Width           =   2175
+      _cx             =   3836
+      _cy             =   1931
+      Appearance      =   1
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Text            =   ""
+      Alignment       =   0
+      HideSelection   =   -1  'True
+      Locked          =   0   'False
+      MaxLength       =   0
+      MultiLine       =   0   'False
+      PasswordChar    =   ""
+      ScrollBars      =   0
+   End
+End
+Attribute VB_Name = "frmMain"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Explicit
+
+Private Sub Form_Load()
+    ResizeControls
+End Sub
+
+' Resizes all the controls together with the window.
+Private Sub ResizeControls()
+    ' Resize the command bar.
+    cbrMain.Width = Me.Width
+    
+    ' Setup and resize the text box.
+    txtMain.Top = cbrMain.Height
+    txtMain.Left = 0
+    txtMain.Width = Me.Width
+    txtMain.Height = Me.Height - cbrMain.Height
+End Sub

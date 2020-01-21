@@ -1,0 +1,8 @@
+# This is an Windows project, so everything should be CRLF.
+* text eol=crlf
+
+# Binary files should stay binary.
+*.png binary
+*.jpg binary
+*.bmp binary
+*.ico binary
