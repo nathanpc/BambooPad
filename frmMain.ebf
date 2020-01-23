@@ -18,10 +18,10 @@ Begin VB.Form frmMain
       Top             =   1440
       _cx             =   847
       _cy             =   847
-      CancelError     =   0   'False
+      CancelError     =   -1  'True
       Color           =   0
       DefaultExt      =   ""
-      DialogTitle     =   ""
+      DialogTitle     =   "Select Font"
       FileName        =   ""
       Filter          =   ""
       FilterIndex     =   0
@@ -185,7 +185,6 @@ Private Sub InitializeCommandBar()
     ' Populate the Find menu.
     Set mnuFind = mnuMain.Items.Add(3, "mnuFind", "&Find")
     mnuFind.SubItems.Add , "Find", "F&ind..."
-    mnuFind.SubItems.Add , "FindNext", "Find &Next"
     mnuFind.SubItems.Add , "Replace", "&Replace..."
     mnuFind.SubItems.Add , "", "", cbrMenuSeparator
     mnuFind.SubItems.Add , "GoTo", "&Go To..."
@@ -329,6 +328,30 @@ Public Sub GoToLineCommand()
     End If
 End Sub
 
+Public Sub SelectFontCommand()
+    ' Put the text field configuration into the dialog.
+    dlgFont.FontBold = txtMain.FontBold
+    dlgFont.FontItalic = txtMain.FontItalic
+    dlgFont.FontName = txtMain.FontName
+    dlgFont.FontSize = txtMain.FontSize
+    dlgFont.FontStrikethru = txtMain.FontStrikethru
+    dlgFont.FontUnderline = txtMain.FontUnderline
+    dlgFont.Color = txtMain.ForeColor
+    
+    ' Select the font stuff and replace the text field configuration.
+    On Error Resume Next
+    dlgFont.ShowFont
+    If Err = 0 Then
+        txtMain.FontBold = dlgFont.FontBold
+        txtMain.FontItalic = dlgFont.FontItalic
+        txtMain.FontName = dlgFont.FontName
+        txtMain.FontSize = dlgFont.FontSize
+        txtMain.FontStrikethru = dlgFont.FontStrikethru
+        txtMain.FontUnderline = dlgFont.FontUnderline
+        txtMain.ForeColor = dlgFont.Color
+    End If
+End Sub
+
 '*
 '* Event Handlers
 '*
@@ -383,6 +406,8 @@ Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
         txtMain.SetFocus
     Case "GoTo"
         GoToLineCommand
+    Case "Font"
+        SelectFontCommand
     Case "About"
         frmAbout.CentralizeDialog Me
         frmAbout.Show
