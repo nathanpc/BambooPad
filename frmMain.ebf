@@ -206,18 +206,18 @@ End Sub
 '*
 
 ' Checks if the text field can have its contents changed.
-Public Function CheckForTextDirty() As Boolean
+Public Function SaveIfTextDirty() As Boolean
     If bTextDirty Then
         Dim msgReturn As VbMsgBoxResult
-        msgReturn = MsgBox("You have unsaved changes. Do you wish to discard these changes?", vbYesNo + vbExclamation, "Unsaved Changes")
+        msgReturn = MsgBox("You have unsaved changes. Do you wish to save these changes?", vbYesNo + vbExclamation, "Unsaved Changes")
         
-        If msgReturn = vbNo Then
-            CheckForTextDirty = False
+        If msgReturn = vbYes Then
+            SaveIfTextDirty = False
             Exit Function
         End If
     End If
     
-    CheckForTextDirty = True
+    SaveIfTextDirty = True
 End Function
 
 ' Sets the text field content and resets the dirtiness flag.
@@ -233,7 +233,7 @@ End Sub
 ' Clears out the text field and prepares for a new file.
 Public Sub NewFileCommand()
     ' Check if we can overwrite the text field.
-    If CheckForTextDirty Then
+    If SaveIfTextDirty Then
         SetTextField ""
     End If
 End Sub
@@ -267,7 +267,7 @@ Public Sub OpenFileCommand()
     Dim fFileFlags As FileOpenConstants
     
     ' Check if we can overwrite the text field.
-    If CheckForTextDirty Then
+    If SaveIfTextDirty Then
         ' Setup and open a Open dialog.
         fFileFlags = cdlOFNFileMustExist
         dlgFile.Flags = fFileFlags
@@ -325,7 +325,7 @@ End Sub
 
 ' Event fired right before unloading the form and its contents.
 Private Sub Form_Unload(Cancel As Integer)
-    If Not CheckForTextDirty Then
+    If Not SaveIfTextDirty Then
         SaveFileCommand True
     End If
 End Sub
@@ -356,8 +356,12 @@ Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
         txtMain.SelStart = 0
         txtMain.SelLength = Len(txtMain.Text)
         txtMain.SetFocus
+    Case "About"
+        frmAbout.CentralizeDialog Me
+        frmAbout.Show
+        Exit Sub
     Case "Exit"
-        If CheckForTextDirty Then
+        If SaveIfTextDirty Then
             App.End
         End If
     End Select

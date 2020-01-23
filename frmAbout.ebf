@@ -1,0 +1,154 @@
+VERSION 5.00
+Begin VB.Form frmAbout 
+   BorderStyle     =   3  'Fixed Dialog
+   Caption         =   "About"
+   ClientHeight    =   1830
+   ClientLeft      =   45
+   ClientTop       =   330
+   ClientWidth     =   4065
+   ScaleHeight     =   1830
+   ScaleWidth      =   4065
+   ShowInTaskbar   =   0   'False
+   Begin VBCE.Label lblCompanyName 
+      Height          =   255
+      Left            =   2280
+      TabIndex        =   3
+      Top             =   1560
+      Width           =   1695
+      _cx             =   2990
+      _cy             =   450
+      Appearance      =   1
+      AutoSize        =   0   'False
+      BackColor       =   -2147483633
+      BackStyle       =   1
+      BorderStyle     =   0
+      Caption         =   "%CompanyName%"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   1
+      UseMnemonic     =   -1  'True
+      WordWrap        =   0   'False
+   End
+   Begin VBCE.Label lblDevName 
+      Height          =   255
+      Left            =   120
+      TabIndex        =   2
+      Top             =   1560
+      Width           =   1695
+      _cx             =   2990
+      _cy             =   450
+      Appearance      =   1
+      AutoSize        =   0   'False
+      BackColor       =   -2147483633
+      BackStyle       =   1
+      BorderStyle     =   0
+      Caption         =   "%DeveloperName%"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   0
+      UseMnemonic     =   -1  'True
+      WordWrap        =   0   'False
+   End
+   Begin VBCE.Label lblVersion 
+      Height          =   255
+      Left            =   0
+      TabIndex        =   1
+      Top             =   1200
+      Width           =   4095
+      _cx             =   7223
+      _cy             =   450
+      Appearance      =   1
+      AutoSize        =   0   'False
+      BackColor       =   -2147483633
+      BackStyle       =   1
+      BorderStyle     =   0
+      Caption         =   "%VersionNumber%"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   2
+      UseMnemonic     =   -1  'True
+      WordWrap        =   0   'False
+   End
+   Begin VB.Shape Shape1 
+      Height          =   615
+      Left            =   1680
+      Top             =   120
+      Width           =   735
+   End
+   Begin VBCE.Label lblAppName 
+      Height          =   255
+      Left            =   0
+      TabIndex        =   0
+      Top             =   960
+      Width           =   4095
+      _cx             =   7223
+      _cy             =   450
+      Appearance      =   1
+      AutoSize        =   0   'False
+      BackColor       =   -2147483633
+      BackStyle       =   1
+      BorderStyle     =   0
+      Caption         =   "%AppName%"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   2
+      UseMnemonic     =   -1  'True
+      WordWrap        =   0   'False
+   End
+End
+Attribute VB_Name = "frmAbout"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Explicit
+
+' Populates the about form with content.
+Private Sub Form_Load()
+    lblAppName.Caption = App.Title
+    lblVersion.Caption = App.Major & "." & App.Minor & "." & App.Revision
+    lblCompanyName.Caption = App.CompanyName
+    lblDevName.Caption = App.Comments
+End Sub
+
+' Called to center the dialog.
+Public Sub CentralizeDialog(frmParent As Form)
+    Me.Left = frmParent.Left + (frmParent.Width / 2) - (Me.Width / 2)
+    Me.Top = frmParent.Top + (frmParent.Height / 2) - (Me.Height / 2)
+End Sub
