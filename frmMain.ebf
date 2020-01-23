@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{A32A88B3-817C-11D1-A762-00AA0044064C}#1.0#0"; "mscecomdlg.dll"
-Object = "{BE67ABF5-0137-11D2-9B8A-00C04FAD5AEC}#1.0#0"; "mscecommandbar.dll"
 Object = "{25C953A7-5464-11D1-A714-00AA0044064C}#1.0#0"; "MSCEFile.dll"
+Object = "{BE67ABF5-0137-11D2-9B8A-00C04FAD5AEC}#1.0#0"; "mscecommandbar.dll"
 Begin VB.Form frmMain 
    BorderStyle     =   0  'None
    Caption         =   "BambooPad"
@@ -108,7 +108,7 @@ Begin VB.Form frmMain
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   -2147483640
-      Text            =   ""
+      Text            =   "This is some \r\n Stuff\r\nTo select."
       Alignment       =   0
       HideSelection   =   -1  'True
       Locked          =   0   'False
@@ -192,7 +192,6 @@ Private Sub InitializeCommandBar()
     
     ' Populate the Format menu.
     Set mnuFormat = mnuMain.Items.Add(4, "mnuFormat", "For&mat")
-    mnuFormat.SubItems.Add , "WordWrap", "&Word Wrap"
     mnuFormat.SubItems.Add , "Font", "&Font..."
     mnuFormat.SubItems.Add , "", "", cbrMenuSeparator
     mnuFormat.SubItems.Add , "AutoIndent", "&Auto Indent"
@@ -210,7 +209,7 @@ End Sub
 Public Function CheckForTextDirty() As Boolean
     If bTextDirty Then
         Dim msgReturn As VbMsgBoxResult
-        msgReturn = MsgBox("You have unsaved changes. Do you wish to continue?", vbYesNo + vbExclamation, "Unsaved Changes")
+        msgReturn = MsgBox("You have unsaved changes. Do you wish to discard these changes?", vbYesNo + vbExclamation, "Unsaved Changes")
         
         If msgReturn = vbNo Then
             CheckForTextDirty = False
@@ -286,6 +285,25 @@ Public Sub OpenFileCommand()
     End If
 End Sub
 
+' Copies text from the text field to the clipboard.
+Public Sub CopyTextCommand(bRemoveCopiedText As Boolean)
+    Clipboard.SetText txtMain.SelText
+    
+    If bRemoveCopiedText Then
+        txtMain.SelText = ""
+    Else
+        txtMain.SelStart = txtMain.SelStart + txtMain.SelLength
+        txtMain.SelLength = 0
+    End If
+End Sub
+
+' Pastes text from the clipboard to the text field.
+Public Sub PasteTextCommand()
+    If Clipboard.GetFormat(vbCFText) Then
+        txtMain.SelText = Clipboard.GetText
+    End If
+End Sub
+
 '*
 '* Event Handlers
 '*
@@ -328,15 +346,21 @@ Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
         SaveFileCommand False
     Case "SaveAs"
         SaveFileCommand True
-    Case "WordWrap"
-        'If (txtMain.ScrollBars = vbBoth) Then
-        '    txtMain.ScrollBars = vbVertical
-        'Else
-        '    txtMain.ScrollBars = vbBoth
-        'End If
+    Case "Copy"
+        CopyTextCommand False
+    Case "Cut"
+        CopyTextCommand True
+    Case "Paste"
+        PasteTextCommand
+    Case "SelectAll"
+        txtMain.SelStart = 0
+        txtMain.SelLength = Len(txtMain.Text)
+        txtMain.SetFocus
     Case "Exit"
         If CheckForTextDirty Then
             App.End
         End If
     End Select
+    
+    txtMain.SetFocus
 End Sub
