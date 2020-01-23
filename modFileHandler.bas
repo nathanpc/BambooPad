@@ -52,3 +52,30 @@ Public Function ConvertLFtoCRLF(sText As String) As String
     ' TODO: Go through the text and replace every \n with \r\n
     ConvertLFtoCRLF = sText
 End Function
+
+' Gets the character position of the beginning of a line numnber. Returns negative if not found.
+Public Function GetLineCharPosition(sText As String, nLine As Integer) As Integer
+    Dim nLineCount As Integer
+    Dim nCharCount As Integer
+    nLineCount = 1
+    
+    ' If all you want is the first line, then do nothing.
+    If nLine > 1 Then
+        nCharCount = InStr(1, sText, vbLf)
+        
+        Do While nCharCount > 0
+            nLineCount = nLineCount + 1
+            If nLineCount = nLine Then
+                GetLineCharPosition = nCharCount
+                Exit Function
+            End If
+            
+            nCharCount = InStr(nCharCount + 1, sText, vbLf)
+        Loop
+    Else
+        GetLineCharPosition = 0
+        Exit Function
+    End If
+    
+    GetLineCharPosition = -1
+End Function

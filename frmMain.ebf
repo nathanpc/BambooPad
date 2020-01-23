@@ -67,7 +67,7 @@ Begin VB.Form frmMain
       CancelError     =   -1  'True
       Color           =   0
       DefaultExt      =   "txt"
-      DialogTitle     =   "Save"
+      DialogTitle     =   "Open/Save"
       FileName        =   ""
       Filter          =   "Plain Text (*.txt)|*.txt|All Files (*.*)|*.*"
       FilterIndex     =   0
@@ -248,6 +248,7 @@ Public Sub SaveFileCommand(bForceDialogShow As Boolean)
         fFileFlags = cdlOFNCreatePrompt + cdlOFNOverwritePrompt
         dlgFile.Flags = fFileFlags
         dlgFile.FileName = sCurrentFilename
+        dlgFile.DialogTitle = "Save"
         On Error Resume Next
         dlgFile.ShowSave
         
@@ -272,6 +273,7 @@ Public Sub OpenFileCommand()
         fFileFlags = cdlOFNFileMustExist
         dlgFile.Flags = fFileFlags
         dlgFile.FileName = sCurrentFilename
+        dlgFile.DialogTitle = "Open"
         On Error Resume Next
         dlgFile.ShowOpen
         
@@ -301,6 +303,29 @@ End Sub
 Public Sub PasteTextCommand()
     If Clipboard.GetFormat(vbCFText) Then
         txtMain.SelText = Clipboard.GetText
+    End If
+End Sub
+
+' Queries the user and goes to a defined line.
+Public Sub GoToLineCommand()
+    Dim sLineNumber As String
+    Dim nCurPosition As Integer
+    sLineNumber = InputBox("Please enter the line number", "Go To")
+    
+    ' Check if the used did input a valid number.
+    If sLineNumber = "" Then
+        Exit Sub
+    ElseIf Not IsNumeric(sLineNumber) Then
+        MsgBox sLineNumber & " is not a valid line number", vbOKOnly + vbExclamation, "Invalid Line Number"
+        Exit Sub
+    End If
+    
+    ' Search for the line character position.
+    nCurPosition = GetLineCharPosition(txtMain.Text, Int(sLineNumber))
+    If nCurPosition >= 0 Then
+        txtMain.SelStart = nCurPosition
+    Else
+        MsgBox "Supplied number is bigger than the number of lines in the text", vbOKOnly + vbExclamation, "Invalid Line Number"
     End If
 End Sub
 
@@ -356,6 +381,8 @@ Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
         txtMain.SelStart = 0
         txtMain.SelLength = Len(txtMain.Text)
         txtMain.SetFocus
+    Case "GoTo"
+        GoToLineCommand
     Case "About"
         frmAbout.CentralizeDialog Me
         frmAbout.Show
