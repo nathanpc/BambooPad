@@ -64,12 +64,12 @@ Begin VB.Form frmMain
       Top             =   1440
       _cx             =   847
       _cy             =   847
-      CancelError     =   0   'False
+      CancelError     =   -1  'True
       Color           =   0
       DefaultExt      =   "txt"
       DialogTitle     =   "Save"
       FileName        =   ""
-      Filter          =   ""
+      Filter          =   "Plain Text (*.txt)|*.txt|All Files (*.*)|*.*"
       FilterIndex     =   0
       Flags           =   0
       HelpCommand     =   0
@@ -130,37 +130,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' General variables.
-Dim bTextDirty As Boolean
+Public bTextDirty As Boolean
+Public bLineEndingLF As Boolean
+Public sCurrentFilename As String
 
-' Application was loaded.
-Private Sub Form_Load()
-    bTextDirty = False
-    
-    ResizeControls
-    InitializeCommandBar
-End Sub
-
-' Event fired when the text changes.
-Private Sub txtMain_Change()
-    bTextDirty = True
-End Sub
-
-' Event fired when a menu item is clicked.
-Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
-    ScrollBarConstants.vbBoth
-    Select Case Item.Key
-    Case "New"
-        NewFile bTextDirty, txtMain
-    Case "WordWrap"
-        'If (txtMain.ScrollBars = ScrollBarConstants.vbBoth) Then
-        '    txtMain.ScrollBars = vbVertical
-        'Else
-        '    txtMain.ScrollBars = vbBoth
-        'End If
-    Case "Exit"
-        App.End
-    End Select
-End Sub
+'*
+'* Control Management
+'*
 
 ' Resizes all the controls together with the window.
 Private Sub ResizeControls()
@@ -224,4 +200,143 @@ Private Sub InitializeCommandBar()
     ' Populate the Help menu.
     Set mnuHelp = mnuMain.Items.Add(5, "mnuHelp", "&Help")
     mnuHelp.SubItems.Add , "About", "&About"
+End Sub
+
+'*
+'* Auxiliary Methods
+'*
+
+' Checks if the text field can have its contents changed.
+Public Function CheckForTextDirty() As Boolean
+    If bTextDirty Then
+        Dim msgReturn As VbMsgBoxResult
+        msgReturn = MsgBox("You have unsaved changes. Do you wish to continue?", vbYesNo + vbExclamation, "Unsaved Changes")
+        
+        If msgReturn = vbNo Then
+            CheckForTextDirty = False
+            Exit Function
+        End If
+    End If
+    
+    CheckForTextDirty = True
+End Function
+
+' Sets the text field content and resets the dirtiness flag.
+Public Sub SetTextField(sContent As String)
+    txtMain.Text = sContent
+    bTextDirty = False
+End Sub
+
+'*
+'* CommandBar/Button Action Handlers
+'*
+
+' Clears out the text field and prepares for a new file.
+Public Sub NewFileCommand()
+    ' Check if we can overwrite the text field.
+    If CheckForTextDirty Then
+        SetTextField ""
+    End If
+End Sub
+
+' Saves the text field content to a file.
+Public Sub SaveFileCommand(bForceDialogShow As Boolean)
+    Dim fFileFlags As FileOpenConstants
+    
+    ' Check if we should show the save dialog.
+    If (sCurrentFilename = "") Or bForceDialogShow Then
+        ' Setup and open a save dialog.
+        fFileFlags = cdlOFNCreatePrompt + cdlOFNOverwritePrompt
+        dlgFile.Flags = fFileFlags
+        dlgFile.FileName = sCurrentFilename
+        On Error Resume Next
+        dlgFile.ShowSave
+        
+        If Err = 0 Then
+            sCurrentFilename = dlgFile.FileName
+        End If
+    End If
+    
+    ' Write text to file.
+    WriteFileText hndFile, sCurrentFilename, txtMain.Text, bLineEndingLF
+    bTextDirty = False
+End Sub
+
+' Opens a file using a dialog.
+Public Sub OpenFileCommand()
+    Dim sFileContents As String
+    Dim fFileFlags As FileOpenConstants
+    
+    ' Check if we can overwrite the text field.
+    If CheckForTextDirty Then
+        ' Setup and open a Open dialog.
+        fFileFlags = cdlOFNFileMustExist
+        dlgFile.Flags = fFileFlags
+        dlgFile.FileName = sCurrentFilename
+        On Error Resume Next
+        dlgFile.ShowOpen
+        
+        ' Get file contents if the dialog wasn't canceled.
+        If Err = 0 Then
+            sCurrentFilename = dlgFile.FileName
+            ' TODO: Check the line ending of a file automatically.
+            SetTextField GetFileText(hndFile, sCurrentFilename, bLineEndingLF)
+            bTextDirty = False
+        End If
+    End If
+End Sub
+
+'*
+'* Event Handlers
+'*
+
+' Application was loaded.
+Private Sub Form_Load()
+    bLineEndingLF = False
+    bTextDirty = False
+    sCurrentFilename = ""
+    
+    ResizeControls
+    InitializeCommandBar
+End Sub
+
+' Window was resized.
+Private Sub Form_Resize()
+    ResizeControls
+End Sub
+
+' Event fired right before unloading the form and its contents.
+Private Sub Form_Unload(Cancel As Integer)
+    If Not CheckForTextDirty Then
+        SaveFileCommand True
+    End If
+End Sub
+
+' Event fired when the text changes.
+Private Sub txtMain_Change()
+    bTextDirty = True
+End Sub
+
+' Event fired when a menu item is clicked.
+Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
+    Select Case Item.Key
+    Case "New"
+        NewFileCommand
+    Case "Open"
+        OpenFileCommand
+    Case "Save"
+        SaveFileCommand False
+    Case "SaveAs"
+        SaveFileCommand True
+    Case "WordWrap"
+        'If (txtMain.ScrollBars = vbBoth) Then
+        '    txtMain.ScrollBars = vbVertical
+        'Else
+        '    txtMain.ScrollBars = vbBoth
+        'End If
+    Case "Exit"
+        If CheckForTextDirty Then
+            App.End
+        End If
+    End Select
 End Sub
