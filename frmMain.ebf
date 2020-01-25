@@ -1,21 +1,30 @@
 VERSION 5.00
-Object = "{A32A88B3-817C-11D1-A762-00AA0044064C}#1.0#0"; "mscecomdlg.dll"
+Object = "{A32A88B3-817C-11D1-A762-00AA0044064C}#1.0#0"; "MSCEComDlg.dll"
 Object = "{25C953A7-5464-11D1-A714-00AA0044064C}#1.0#0"; "MSCEFile.dll"
 Object = "{BE67ABF5-0137-11D2-9B8A-00C04FAD5AEC}#1.0#0"; "mscecommandbar.dll"
+Object = "{E491F001-98EC-11D1-9B3D-00C04FAD5AEC}#1.0#0"; "MSCEImageList.dll"
 Begin VB.Form frmMain 
    BorderStyle     =   0  'None
    Caption         =   "BambooPad"
    ClientHeight    =   2490
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   4980
+   ClientWidth     =   3375
    ScaleHeight     =   2490
-   ScaleWidth      =   4980
+   ScaleWidth      =   3375
    ShowInTaskbar   =   0   'False
    WindowState     =   2  'Maximized
+   Begin CEImageListCtl.ImageList imgList 
+      Left            =   2280
+      Top             =   1920
+      _cx             =   990
+      _cy             =   990
+      ImageWidth      =   0
+      ImageHeight     =   0
+   End
    Begin CEComDlgCtl.CommonDialog dlgFont 
-      Left            =   4320
-      Top             =   1440
+      Left            =   840
+      Top             =   1920
       _cx             =   847
       _cy             =   847
       CancelError     =   -1  'True
@@ -41,8 +50,8 @@ Begin VB.Form frmMain
       FontStrikethru  =   0   'False
    End
    Begin FILECTLCtl.File hndFile 
-      Left            =   3720
-      Top             =   360
+      Left            =   1560
+      Top             =   1920
       _cx             =   1000
       _cy             =   1000
    End
@@ -60,8 +69,8 @@ Begin VB.Form frmMain
       CloseButton     =   -1  'True
    End
    Begin CEComDlgCtl.CommonDialog dlgFile 
-      Left            =   3600
-      Top             =   1440
+      Left            =   240
+      Top             =   1920
       _cx             =   847
       _cy             =   847
       CancelError     =   -1  'True
@@ -150,6 +159,27 @@ Private Sub ResizeControls()
     txtMain.Height = Me.Height - cbrMain.Height
 End Sub
 
+' Initializes the image list.
+Private Sub InitializeImageList()
+    ' New, Open, and Save
+    imgList.Add App.Path & "\NEW.BMP"
+    imgList.Add App.Path & "\OPEN.BMP"
+    imgList.Add App.Path & "\SAVE.BMP"
+    
+    ' Cut, Copy, and Paste
+    imgList.Add App.Path & "\CUT.BMP"
+    imgList.Add App.Path & "\COPY.BMP"
+    imgList.Add App.Path & "\PASTE.BMP"
+    
+    ' Undo and Redo
+    imgList.Add App.Path & "\UNDO.BMP"
+    imgList.Add App.Path & "\REDO.BMP"
+    
+    ' Find and Font
+    imgList.Add App.Path & "\FIND.BMP"
+    imgList.Add App.Path & "\FONT.BMP"
+End Sub
+
 ' Initializes the command bar and adds all of its controls.
 Private Sub InitializeCommandBar()
     Dim mnuMain As CommandbarLib.CommandBarMenuBar
@@ -158,8 +188,10 @@ Private Sub InitializeCommandBar()
     Dim mnuFind As CommandbarLib.Item
     Dim mnuFormat As CommandbarLib.Item
     Dim mnuHelp As CommandbarLib.Item
+    Dim cmdButton As CommandBarButton
     
-    ' Initialize the menu bar.
+    ' Initialize the menu bar and associate a image list.
+    cbrMain.ImageList = imgList.hImageList
     Set mnuMain = cbrMain.Controls.Add(cbrMenuBar, "MainMenu")
     
     ' Populate the File menu.
@@ -192,12 +224,56 @@ Private Sub InitializeCommandBar()
     ' Populate the Format menu.
     Set mnuFormat = mnuMain.Items.Add(4, "mnuFormat", "For&mat")
     mnuFormat.SubItems.Add , "Font", "&Font..."
-    mnuFormat.SubItems.Add , "", "", cbrMenuSeparator
-    mnuFormat.SubItems.Add , "AutoIndent", "&Auto Indent"
     
     ' Populate the Help menu.
     Set mnuHelp = mnuMain.Items.Add(5, "mnuHelp", "&Help")
     mnuHelp.SubItems.Add , "About", "&About"
+    
+    ' Add New, Open, and Save buttons.
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Style = cbrSeparator
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 0
+    cmdButton.Key = "New"
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 1
+    cmdButton.Key = "Open"
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 2
+    cmdButton.Key = "Save"
+    
+    ' Add Cut, Copy, and Paste buttons.
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Style = cbrSeparator
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 3
+    cmdButton.Key = "Cut"
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 4
+    cmdButton.Key = "Copy"
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 5
+    cmdButton.Key = "Paste"
+    
+    ' Add Undo and Redo buttons.
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Style = cbrSeparator
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 6
+    cmdButton.Key = "Undo"
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 7
+    cmdButton.Key = "Redo"
+    
+    ' Add Find and Font button.
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Style = cbrSeparator
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 8
+    cmdButton.Key = "Find"
+    Set cmdButton = cbrMain.Controls.Add(cbrButton)
+    cmdButton.Image = 9
+    cmdButton.Key = "Font"
 End Sub
 
 '*
@@ -352,40 +428,8 @@ Public Sub SelectFontCommand()
     End If
 End Sub
 
-'*
-'* Event Handlers
-'*
-
-' Application was loaded.
-Private Sub Form_Load()
-    bLineEndingLF = False
-    bTextDirty = False
-    sCurrentFilename = ""
-    
-    ResizeControls
-    InitializeCommandBar
-End Sub
-
-' Window was resized.
-Private Sub Form_Resize()
-    ResizeControls
-End Sub
-
-' Event fired right before unloading the form and its contents.
-Private Sub Form_Unload(Cancel As Integer)
-    If Not SaveIfTextDirty Then
-        SaveFileCommand True
-    End If
-End Sub
-
-' Event fired when the text changes.
-Private Sub txtMain_Change()
-    bTextDirty = True
-End Sub
-
-' Event fired when a menu item is clicked.
-Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
-    Select Case Item.Key
+Public Sub HandleCommand(sKey As String)
+    Select Case sKey
     Case "New"
         NewFileCommand
     Case "Open"
@@ -419,4 +463,46 @@ Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
     End Select
     
     txtMain.SetFocus
+End Sub
+
+'*
+'* Event Handlers
+'*
+
+' Application was loaded.
+Private Sub Form_Load()
+    bLineEndingLF = False
+    bTextDirty = False
+    sCurrentFilename = ""
+    
+    ResizeControls
+    InitializeImageList
+    InitializeCommandBar
+End Sub
+
+' Window was resized.
+Private Sub Form_Resize()
+    ResizeControls
+End Sub
+
+' Event fired right before unloading the form and its contents.
+Private Sub Form_Unload(Cancel As Integer)
+    If Not SaveIfTextDirty Then
+        SaveFileCommand True
+    End If
+End Sub
+
+' Event fired when the text changes.
+Private Sub txtMain_Change()
+    bTextDirty = True
+End Sub
+
+' Handles button clicks in the command bar.
+Private Sub cbrMain_ButtonClick(ByVal Button As CommandbarLib.CommandBarButton)
+    HandleCommand Button.Key
+End Sub
+
+' Event fired when a menu item is clicked.
+Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
+    HandleCommand Item.Key
 End Sub
