@@ -368,9 +368,6 @@ Public Sub CopyTextCommand(bRemoveCopiedText As Boolean)
     
     If bRemoveCopiedText Then
         txtMain.SelText = ""
-    Else
-        txtMain.SelStart = txtMain.SelStart + txtMain.SelLength
-        txtMain.SelLength = 0
     End If
 End Sub
 
