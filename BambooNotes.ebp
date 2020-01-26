@@ -24,6 +24,7 @@ RelatedDoc=Toolbar\FIND.BMP
 RelatedDoc=Toolbar\UNDO.BMP
 RelatedDoc=Toolbar\REDO.BMP
 RelatedDoc=Toolbar\FONT.BMP
+Module=modUndoRedo; modUndoRedo.bas
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""

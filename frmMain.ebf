@@ -117,7 +117,7 @@ Begin VB.Form frmMain
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   -2147483640
-      Text            =   "This is some \r\n Stuff\r\nTo select."
+      Text            =   ""
       Alignment       =   0
       HideSelection   =   -1  'True
       Locked          =   0   'False
@@ -190,6 +190,12 @@ Private Sub InitializeCommandBar()
     Dim mnuHelp As CommandbarLib.Item
     Dim cmdButton As CommandBarButton
     
+    ' Undo/Redo controls for undo stack module.
+    Dim miUndo As CommandbarLib.Item
+    Dim miRedo As CommandbarLib.Item
+    Dim btUndo As CommandBarButton
+    Dim btRedo As CommandBarButton
+    
     ' Initialize the menu bar and associate a image list.
     cbrMain.ImageList = imgList.hImageList
     Set mnuMain = cbrMain.Controls.Add(cbrMenuBar, "MainMenu")
@@ -205,8 +211,8 @@ Private Sub InitializeCommandBar()
     
     ' Populate the Edit menu.
     Set mnuEdit = mnuMain.Items.Add(2, "mnuEdit", "&Edit")
-    mnuEdit.SubItems.Add , "Undo", "&Undo"
-    mnuEdit.SubItems.Add , "Redo", "&Redo"
+    Set miUndo = mnuEdit.SubItems.Add(, "Undo", "&Undo")
+    Set miRedo = mnuEdit.SubItems.Add(, "Redo", "&Redo")
     mnuEdit.SubItems.Add , "", "", cbrMenuSeparator
     mnuEdit.SubItems.Add , "Cut", "Cu&t"
     mnuEdit.SubItems.Add , "Copy", "&Copy"
@@ -258,12 +264,12 @@ Private Sub InitializeCommandBar()
     ' Add Undo and Redo buttons.
     Set cmdButton = cbrMain.Controls.Add(cbrButton)
     cmdButton.Style = cbrSeparator
-    Set cmdButton = cbrMain.Controls.Add(cbrButton)
-    cmdButton.Image = 6
-    cmdButton.Key = "Undo"
-    Set cmdButton = cbrMain.Controls.Add(cbrButton)
-    cmdButton.Image = 7
-    cmdButton.Key = "Redo"
+    Set btUndo = cbrMain.Controls.Add(cbrButton)
+    btUndo.Image = 6
+    btUndo.Key = "Undo"
+    Set btRedo = cbrMain.Controls.Add(cbrButton)
+    btRedo.Image = 7
+    btRedo.Key = "Redo"
     
     ' Add Find and Font button.
     Set cmdButton = cbrMain.Controls.Add(cbrButton)
@@ -274,6 +280,9 @@ Private Sub InitializeCommandBar()
     Set cmdButton = cbrMain.Controls.Add(cbrButton)
     cmdButton.Image = 9
     cmdButton.Key = "Font"
+    
+    ' Initialize undo stack.
+    InitializeUndoStack btUndo, btRedo, miUndo, miRedo, txtMain, txtMain.Text
 End Sub
 
 '*
@@ -358,6 +367,7 @@ Public Sub OpenFileCommand()
             ' TODO: Check the line ending of a file automatically.
             SetTextField GetFileText(hndFile, sCurrentFilename, bLineEndingLF)
             bTextDirty = False
+            ClearUndoStack txtMain.Text
         End If
     End If
 End Sub
@@ -368,6 +378,7 @@ Public Sub CopyTextCommand(bRemoveCopiedText As Boolean)
     
     If bRemoveCopiedText Then
         txtMain.SelText = ""
+        PushTextToUndoStack txtMain.Text, txtMain.SelStart + txtMain.SelLength
     End If
 End Sub
 
@@ -375,6 +386,7 @@ End Sub
 Public Sub PasteTextCommand()
     If Clipboard.GetFormat(vbCFText) Then
         txtMain.SelText = Clipboard.GetText
+        PushTextToUndoStack txtMain.Text, txtMain.SelStart + txtMain.SelLength
     End If
 End Sub
 
@@ -449,6 +461,10 @@ Public Sub HandleCommand(sKey As String)
         GoToLineCommand
     Case "Font"
         SelectFontCommand
+    Case "Undo"
+        txtMain.Text = GetTextFromUndoStack
+    Case "Redo"
+        txtMain.Text = GetTextFromRedoStack
     Case "About"
         frmAbout.CentralizeDialog Me
         frmAbout.Show
@@ -475,6 +491,8 @@ Private Sub Form_Load()
     ResizeControls
     InitializeImageList
     InitializeCommandBar
+    
+    'PushTextToUndoStack ""
 End Sub
 
 ' Window was resized.
@@ -502,4 +520,14 @@ End Sub
 ' Event fired when a menu item is clicked.
 Private Sub cbrMain_MenuClick(ByVal Item As CommandbarLib.Item)
     HandleCommand Item.Key
+End Sub
+
+' Handles key presses in the main text field.
+Private Sub txtMain_KeyPress(ByVal KeyAscii As Integer)
+    ' Pushes text to the undo stack whenever space or enter is pressed.
+    If (KeyAscii = 32) Or (KeyAscii = 13) Then
+        PushTextToUndoStack txtMain.Text, txtMain.SelStart + txtMain.SelLength
+    Else
+        SetCurrentUndoStackItem txtMain.Text & Chr(KeyAscii), txtMain.SelStart + txtMain.SelLength
+    End If
 End Sub
