@@ -117,7 +117,7 @@ Begin VB.Form frmMain
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   -2147483640
-      Text            =   ""
+      Text            =   "This is a simple text, something Simple something simple Something."
       Alignment       =   0
       HideSelection   =   -1  'True
       Locked          =   0   'False
@@ -223,6 +223,7 @@ Private Sub InitializeCommandBar()
     ' Populate the Find menu.
     Set mnuFind = mnuMain.Items.Add(3, "mnuFind", "&Find")
     mnuFind.SubItems.Add , "Find", "F&ind..."
+    mnuFind.SubItems.Add , "FindNext", "Find &Next"
     mnuFind.SubItems.Add , "Replace", "&Replace..."
     mnuFind.SubItems.Add , "", "", cbrMenuSeparator
     mnuFind.SubItems.Add , "GoTo", "&Go To..."
@@ -465,6 +466,12 @@ Public Sub HandleCommand(sKey As String)
         txtMain.Text = GetTextFromUndoStack
     Case "Redo"
         txtMain.Text = GetTextFromRedoStack
+    Case "Find"
+        frmFind.PrepareDialog Me
+        frmFind.Show
+        Exit Sub
+    Case "FindNext"
+        FindNext ""
     Case "About"
         frmAbout.CentralizeDialog Me
         frmAbout.Show
@@ -488,9 +495,13 @@ Private Sub Form_Load()
     bTextDirty = False
     sCurrentFilename = ""
     
+    ' Initialize and resize the controls.
     ResizeControls
     InitializeImageList
     InitializeCommandBar
+    
+    ' Initialize the find and replace module.
+    InitializeFindReplace txtMain, False, frAny
     
     'PushTextToUndoStack ""
 End Sub

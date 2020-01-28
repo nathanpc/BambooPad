@@ -56,7 +56,7 @@ End Function
 ' Gets the character position of the beginning of a line numnber. Returns negative if not found.
 Public Function GetLineCharPosition(sText As String, nLine As Integer) As Integer
     Dim nLineCount As Integer
-    Dim nCharCount As Integer
+    Dim nCharCount As Long
     nLineCount = 1
     
     ' If all you want is the first line, then do nothing.
