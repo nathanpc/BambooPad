@@ -2,6 +2,10 @@
 *.vb
 *.exe
 
+# Release and Debug folders.
+Launcher/*Dbg/
+Launcher/*Rel/
+
 # Misc.
 .DS_Store
 
