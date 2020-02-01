@@ -27,6 +27,7 @@ RelatedDoc=Toolbar\PASTE.BMP
 RelatedDoc=Toolbar\REDO.BMP
 RelatedDoc=Toolbar\SAVE.BMP
 RelatedDoc=Toolbar\UNDO.BMP
+Form=frmReplace.ebf
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""

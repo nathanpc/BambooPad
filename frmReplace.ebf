@@ -1,0 +1,367 @@
+VERSION 5.00
+Begin VB.Form frmReplace 
+   BorderStyle     =   3  'Fixed Dialog
+   Caption         =   "Replace"
+   ClientHeight    =   1575
+   ClientLeft      =   45
+   ClientTop       =   330
+   ClientWidth     =   5805
+   ScaleHeight     =   1575
+   ScaleWidth      =   5805
+   ShowInTaskbar   =   0   'False
+   Begin VBCE.CommandButton btnReplaceAll 
+      Height          =   375
+      Left            =   4440
+      TabIndex        =   8
+      Top             =   1080
+      Width           =   1215
+      _cx             =   2143
+      _cy             =   661
+      Appearance      =   1
+      BackColor       =   12632256
+      Caption         =   "Replace All"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Style           =   0
+   End
+   Begin VBCE.CommandButton btnReplace 
+      Height          =   375
+      Left            =   4440
+      TabIndex        =   7
+      Top             =   600
+      Width           =   1215
+      _cx             =   2143
+      _cy             =   661
+      Appearance      =   1
+      BackColor       =   12632256
+      Caption         =   "Replace"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Style           =   0
+   End
+   Begin VBCE.TextBox txtReplaceWith 
+      Height          =   300
+      Left            =   1320
+      TabIndex        =   6
+      Top             =   480
+      Width           =   2895
+      _cx             =   5106
+      _cy             =   529
+      Appearance      =   1
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Text            =   ""
+      Alignment       =   0
+      HideSelection   =   -1  'True
+      Locked          =   0   'False
+      MaxLength       =   0
+      MultiLine       =   0   'False
+      PasswordChar    =   ""
+      ScrollBars      =   0
+   End
+   Begin VBCE.Label lblReplaceWith 
+      Height          =   255
+      Left            =   120
+      TabIndex        =   5
+      Top             =   510
+      Width           =   1095
+      _cx             =   1931
+      _cy             =   450
+      Appearance      =   1
+      AutoSize        =   0   'False
+      BackColor       =   -2147483633
+      BackStyle       =   1
+      BorderStyle     =   0
+      Caption         =   "Replace With:"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   0
+      UseMnemonic     =   -1  'True
+      WordWrap        =   0   'False
+   End
+   Begin VBCE.CheckBox chkMatchCase 
+      Height          =   255
+      Left            =   120
+      TabIndex        =   4
+      Top             =   1125
+      Width           =   1575
+      _cx             =   2778
+      _cy             =   450
+      Appearance      =   1
+      BackColor       =   -2147483633
+      Caption         =   "Match Case"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   0
+      Value           =   0
+   End
+   Begin VBCE.CommandButton btnCancel 
+      Cancel          =   -1  'True
+      Height          =   375
+      Left            =   3120
+      TabIndex        =   3
+      Top             =   1080
+      Width           =   1215
+      _cx             =   2143
+      _cy             =   661
+      Appearance      =   1
+      BackColor       =   12632256
+      Caption         =   "Cancel"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Style           =   0
+   End
+   Begin VBCE.CommandButton btnFindNext 
+      Height          =   375
+      Left            =   4440
+      TabIndex        =   2
+      Top             =   120
+      Width           =   1215
+      _cx             =   2143
+      _cy             =   661
+      Appearance      =   1
+      BackColor       =   12632256
+      Caption         =   "Find Next"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Style           =   0
+   End
+   Begin VBCE.TextBox txtFindWhat 
+      Height          =   300
+      Left            =   1320
+      TabIndex        =   1
+      Top             =   120
+      Width           =   2895
+      _cx             =   5106
+      _cy             =   529
+      Appearance      =   1
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Text            =   ""
+      Alignment       =   0
+      HideSelection   =   -1  'True
+      Locked          =   0   'False
+      MaxLength       =   0
+      MultiLine       =   0   'False
+      PasswordChar    =   ""
+      ScrollBars      =   0
+   End
+   Begin VBCE.Label lblFindWhat 
+      Height          =   255
+      Left            =   120
+      TabIndex        =   0
+      Top             =   150
+      Width           =   1095
+      _cx             =   1931
+      _cy             =   450
+      Appearance      =   1
+      AutoSize        =   0   'False
+      BackColor       =   -2147483633
+      BackStyle       =   1
+      BorderStyle     =   0
+      Caption         =   "Find What:"
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   -2147483640
+      Alignment       =   0
+      UseMnemonic     =   -1  'True
+      WordWrap        =   0   'False
+   End
+End
+Attribute VB_Name = "frmReplace"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Option Explicit
+
+Private bFirstSearch As Boolean
+
+' Sets up all the fields according to the find and replace module.
+Private Sub SetupFields()
+    ' Select the whole text box.
+    txtFindWhat.SelStart = 0
+    txtFindWhat.SelLength = Len(txtFindWhat.Text)
+    
+    ' Set checkbox value.
+    If bFindMatchCase Then
+        chkMatchCase.Value = 1
+    Else
+        chkMatchCase.Value = 0
+    End If
+    
+    ' Disable the find button.
+    DisableFindButtonIfNeeded
+End Sub
+
+' Prepares the form for the user.
+Public Sub PrepareDialog(frmParent As Form)
+    ' Centralize the dialog.
+    CentralizeDialog frmParent
+    
+    ' Sets up the fields.
+    SetupFields
+End Sub
+
+' Called to center the dialog.
+Public Sub CentralizeDialog(frmParent As Form)
+    Me.Left = frmParent.Left + (frmParent.Width / 2) - (Me.Width / 2)
+    Me.Top = frmParent.Top + (frmParent.Height / 2) - (Me.Height / 2)
+End Sub
+
+' Disables the find button if necessary.
+Private Sub DisableFindButtonIfNeeded()
+    If Len(txtFindWhat.Text) > 0 Then
+        btnFindNext.Enabled = True
+        btnReplace.Enabled = True
+        btnReplaceAll.Enabled = True
+    Else
+        btnFindNext.Enabled = False
+        btnReplace.Enabled = False
+        btnReplaceAll.Enabled = False
+    End If
+End Sub
+
+' Change the match case flag.
+Private Sub chkMatchCase_Click()
+    bFindMatchCase = (chkMatchCase.Value <> 0)
+End Sub
+
+' Cancels the find.
+Private Sub btnCancel_Click()
+    Me.Hide
+End Sub
+
+' Perform the search.
+Private Sub btnFindNext_Click()
+    fFindDirection = frDown
+    FindNext txtFindWhat.Text
+    SetupFields
+End Sub
+
+' Perform a single replace operation.
+Private Sub btnReplace_Click()
+    ' Setup search direction.
+    If bFirstSearch Then
+        fFindDirection = frAny
+        bFirstSearch = False
+    Else
+        fFindDirection = frDown
+    End If
+    
+    ReplaceOnce txtFindWhat.Text, txtReplaceWith.Text
+    SetupFields
+End Sub
+
+' Replaces all instances of the text.
+Private Sub btnReplaceAll_Click()
+    fFindDirection = frAny
+    ReplaceAll txtFindWhat.Text, txtReplaceWith.Text
+    SetupFields
+End Sub
+
+' We just got focused on.
+Private Sub Form_Activate()
+    SetupFields
+End Sub
+
+' Just check if the text box is empty and disable the find button.
+Private Sub txtFindWhat_Change()
+    DisableFindButtonIfNeeded
+End Sub
+
+' Fired when a key was pressed in the find field.
+Private Sub txtFindWhat_KeyPress(ByVal KeyAscii As Integer)
+    bFirstSearch = True
+    
+    ' Makes it so that hitting return is the same as clicking the button.
+    If KeyAscii = 13 Then
+        btnFindNext_Click
+        KeyAscii = 0
+    End If
+End Sub
+
+' Fired when a key was pressed in the replace field.
+Private Sub txtReplaceWith_KeyPress(ByVal KeyAscii As Integer)
+    bFirstSearch = True
+End Sub

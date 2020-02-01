@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{A32A88B3-817C-11D1-A762-00AA0044064C}#1.0#0"; "MSCEComDlg.dll"
-Object = "{25C953A7-5464-11D1-A714-00AA0044064C}#1.0#0"; "MSCEFile.dll"
+Object = "{A32A88B3-817C-11D1-A762-00AA0044064C}#1.0#0"; "mscecomdlg.dll"
+Object = "{25C953A7-5464-11D1-A714-00AA0044064C}#1.0#0"; "MSCEFILE.DLL"
 Object = "{BE67ABF5-0137-11D2-9B8A-00C04FAD5AEC}#1.0#0"; "mscecommandbar.dll"
-Object = "{E491F001-98EC-11D1-9B3D-00C04FAD5AEC}#1.0#0"; "MSCEImageList.dll"
+Object = "{E491F001-98EC-11D1-9B3D-00C04FAD5AEC}#1.0#0"; "msceimagelist.dll"
 Begin VB.Form frmMain 
    BorderStyle     =   0  'None
    Caption         =   "BambooPad"
@@ -117,7 +117,7 @@ Begin VB.Form frmMain
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   -2147483640
-      Text            =   "This is a simple text, something Simple something simple Something."
+      Text            =   ""
       Alignment       =   0
       HideSelection   =   -1  'True
       Locked          =   0   'False
@@ -472,6 +472,10 @@ Public Sub HandleCommand(sKey As String)
         Exit Sub
     Case "FindNext"
         FindNext ""
+    Case "Replace"
+        frmReplace.PrepareDialog Me
+        frmReplace.Show
+        Exit Sub
     Case "About"
         frmAbout.CentralizeDialog Me
         frmAbout.Show
